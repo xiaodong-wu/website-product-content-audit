@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "synthetic_fixture": true,
+  "site": {"name": "合成示例目录", "url": "https://example.com/", "checked_at": "2026-01-01T10:30:00+08:00"},
+  "coverage": {
+    "scope": "site", "discovery_complete": true,
+    "sources": [{"url": "https://example.com/products/", "kind": "catalog", "checked_at": "2026-01-01T10:00:00+08:00"}],
+    "limitations": ["合成演示数据，不代表真实网站核查。图片内文字未检查。"]
+  },
+  "products": [
+    {
+      "id": "P001", "name": "示例组合配重 A", "model": "A-5", "category": "配重",
+      "current_url": "https://example.com/products/item-a-new", "http_status": 200,
+      "checked_at": "2026-01-01T10:10:00+08:00", "review_status": "reviewed",
+      "access_checks": [{"url": "https://example.com/products/item-a-new", "final_url": "https://example.com/products/item-a-new", "status": 200, "checked_at": "2026-01-01T10:10:00+08:00", "live": true, "body_matches_product": true}],
+      "issues": [
+        {
+          "id": "I001", "priority": "P1", "state": "open", "confirmed": true, "kind": "content",
+          "title": "组合重量与总重不一致", "location": "首屏 / 规格表",
+          "evidence": [{"url": "https://example.com/products/item-a-new", "location": "规格表", "text": "同一规格写每块5g、每条10块，同时标注每条总重60g。"}],
+          "impact": "客户可能按错误总重订货。", "recommendation": "核对实际块数和单块重量，统一每条总重。"
+        }
+      ]
+    },
+    {
+      "id": "P002", "name": "示例工具 B", "model": "B-1", "category": "工具",
+      "current_url": "https://example.com/products/item-b", "http_status": 200,
+      "checked_at": "2026-01-01T10:20:00+08:00", "review_status": "reviewed",
+      "access_checks": [{"url": "https://example.com/products/item-b", "final_url": "https://example.com/products/item-b", "status": 200, "checked_at": "2026-01-01T10:20:00+08:00", "live": true, "body_matches_product": true}],
+      "issues": [{"id": "I002", "priority": "P3", "state": "open", "confirmed": true, "kind": "content", "title": "英文词间缺空格", "location": "简介", "evidence": [{"url": "https://example.com/products/item-b", "location": "简介", "text": "两个普通介绍词之间缺少空格。"}], "impact": "降低可读性，不影响选型。", "recommendation": "补充词间空格。"}]
+    }
+  ],
+  "retired_urls": [{"url": "https://example.com/products/item-a-old", "replacement_url": "https://example.com/products/item-a-new", "checked_at": "2026-01-01T10:10:00+08:00", "catalog_url": "https://example.com/products/", "catalog_href": "https://example.com/products/item-a-new", "identity_confirmed": true, "new_status": 200, "new_body_matches_product": true}]
+}
