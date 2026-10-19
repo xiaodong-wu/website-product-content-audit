@@ -5,7 +5,7 @@
   "coverage": {
     "scope": "site", "discovery_complete": true,
     "sources": [{"url": "https://example.com/products/", "kind": "catalog", "checked_at": "2026-01-01T10:00:00+08:00"}],
-    "limitations": ["合成演示数据，不代表真实网站核查。图片内文字未检查。"]
+    "limitations": ["合成演示数据，不代表真实网站核查。"]
   },
   "products": [
     {

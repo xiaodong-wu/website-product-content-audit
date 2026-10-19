@@ -1,4 +1,4 @@
 interface:
   display_name: "网站产品详情内容核查"
-  short_description: "全量核查产品详情、复核新旧链接并导出有据可查的P1问题汇总表"
-  default_prompt: "使用 $website-product-content-audit 核查这个网站的全部产品详情，复核当前链接，只保留 P1 问题并导出 Excel。"
+  short_description: "只核查产品标题、描述、属性、参数和详情文案，跳过图片并导出P1问题表"
+  default_prompt: "使用 $website-product-content-audit 核查这个网站全部产品的标题、描述、属性、参数和详情文案，跳过图片及图片内文字，复核当前链接，只保留 P1 问题并导出 Excel。"

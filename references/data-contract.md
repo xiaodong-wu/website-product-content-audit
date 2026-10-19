@@ -11,7 +11,7 @@ python3 scripts/probe_urls.py --url-file run/urls.txt --out run/probes
 
 URL 文件每行一个完整 HTTP(S) 地址。默认每次请求后等待 0.5 秒；404、429、5xx 或网络失败最多再试一次。`--timeout` 控制单次等待，`--max-bytes` 限制下载大小。脚本保存响应正文、SHA-256、每次状态/跳转、标题、H1、canonical 和链接；不会自动认定页面属于某产品，也不会自动发现全站产品。
 
-大型或动态站点可用当前浏览工具补查；保留同样的证据字段。只验证了主图或部分尺寸图时，在 limitations 写明。不要把 HTTP 200 直接填写为内容已核查。
+大型或动态站点可用当前浏览工具补查文字内容；保留同样的证据字段。无需下载或读取产品图片，也不对图片做 OCR。只有图片版本的内容直接跳过，不记为文字读取失败。不要把 HTTP 200 直接填写为内容已核查。
 
 ## 2. audit.json
 
@@ -26,7 +26,7 @@ URL 文件每行一个完整 HTTP(S) 地址。默认每次请求后等待 0.5 �
 | coverage.scope | site 或 selected，说明全站还是指定页面 |
 | coverage.discovery_complete | 是否已完成所选范围的产品发现，布尔值 |
 | coverage.sources | 目录/分类/网站地图对象列表，每项 url、kind、checked_at |
-| coverage.limitations | 字符串列表，具体记录遗漏分页、未读图片文字等 |
+| coverage.limitations | 字符串列表，记录遗漏分页、未能读取的正文区块等实际缺口；图片不在核查范围，不填写“图片未检查”等缺口 |
 | products | 当前产品列表；没有 P1 的已查产品也保留，用于覆盖统计 |
 | retired_urls | 可选，已替换旧地址及证据；不导出为当前问题 |
 
@@ -39,7 +39,7 @@ URL 文件每行一个完整 HTTP(S) 地址。默认每次请求后等待 0.5 �
 | current_url | 经核对的当前 URL；保留有意义的查询参数，片段不参与去重 |
 | http_status | 最近的 HTTP 整数状态；未知为 null |
 | checked_at | 此产品最近核查时间，含时区 |
-| review_status | reviewed：正文已读；unavailable：仅完成访问核查；pending：尚未完成 |
+| review_status | reviewed：范围内的标题、描述、属性、参数与正文文案已读；unavailable：仅完成访问核查；pending：文字核查尚未完成。跳过图片不影响 reviewed |
 | access_checks | 实时访问记录列表，见下方 |
 | issues | 问题列表，无问题为 [] |
 
@@ -55,10 +55,10 @@ URL 文件每行一个完整 HTTP(S) 地址。默认每次请求后等待 0.5 �
 | confirmed | 是否有足够证据确认；待确认项不能以 open P1 导出 |
 | kind | content 或 access |
 | title / location / impact / recommendation | 具体问题、所在章节、实际影响和修改建议，均必填 |
-| evidence | 非空列表，每项 url、location、text；至少一项来自当前产品地址 |
+| evidence | 非空列表，每项 url、location、text；内容问题引用可读取的原文或文字表格，至少一项来自当前产品地址；不使用产品图片或 OCR 证据 |
 | catalog_evidence | access 问题必填：url、href、checked_at；href 是当前目录实际指向的产品完整地址 |
 
-导出的 content 问题要求 `review_status=reviewed`，有实时成功访问且正文对应产品的记录。仅访问类产品不能伪装成正文已读。
+导出的 content 问题要求 `review_status=reviewed`，有实时成功访问且正文对应产品的记录。仅访问类产品不能伪装成正文已读。语义审核者须在生成本次 `audit.json` 时排除图片问题及仅有图片证据的问题；脚本不根据文字关键词自动判断证据属于哪种媒介。更新旧报告时，不把图片问题的范围排除标记为已修复；可将历史条目留在原报告，本次清单不纳入。
 
 导出的 access 问题要求当前地址有两次不同时间的实时 404 或 410，最近一次检查也应为 404/410，且当前目录 href 仍指向它。403/超时/伪 404 页需人工补查；此脚本不会自动把它们升级为 P1。
 
@@ -91,6 +91,6 @@ python3 scripts/verify_xlsx.py run/report.json run/report.xlsx
 
 导出器使用运行环境的 artifact-tool，不安装未知 npm 包。省略 `--node-modules` 时尝试正常 Node 模块解析；不可用时明确报错，不将 CSV 冒充 XLSX。
 
-查看两个 PNG 预览，必要时调整导出器的列宽和行高。覆盖缺口及发现未完成会显示在工作簿顶部，零问题不会遮盖未核查产品。
+查看两个 PNG 预览，必要时调整导出器的列宽和行高；此步骤只验收导出表格版式，不核查产品图片。覆盖缺口及发现未完成会显示在工作簿顶部，零问题不会遮盖未核查产品。交付说明注明本次仅核查产品文字内容，图片不计入覆盖缺口。
 
 验收脚本检查 ZIP、工作表数、记录数量、产品/问题编号、证据、当前 URL、问题级别、公式缓存、筛选及冻结。文件验证成功仅证明输出与结构化清单一致。
